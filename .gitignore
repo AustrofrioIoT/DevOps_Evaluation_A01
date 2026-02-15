@@ -1,0 +1,9 @@
+node_modules/
+lambda_payload.zip
+.terraform/
+tfplan
+terraform.tfstate*
+*.tfvars
+.env
+.DS_Store
+

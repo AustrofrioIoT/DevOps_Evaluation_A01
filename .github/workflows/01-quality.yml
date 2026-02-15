@@ -1,0 +1,26 @@
+name: 01 - Quality & Security
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format Check
+        working-directory: terraform
+        run: terraform fmt -check -recursive
+
+      - name: Node Security Audit
+        run: npm audit --audit-level=high

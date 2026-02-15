@@ -1,0 +1,46 @@
+name: 03 - Terraform Apply (Production)
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["02 - Build & Terraform Plan"]
+    types:
+      - completed
+
+jobs:
+  apply:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
+    environment: production
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download Lambda
+        uses: actions/download-artifact@v4
+        with:
+          name: lambda-package
+          path: terraform/
+          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-plan
+          path: terraform/
+          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Apply
+        working-directory: terraform
+        run: |
+          terraform init
+          terraform apply -auto-approve tfplan

@@ -1,0 +1,16 @@
+{
+  "name": "prueba_tecnica_jelou",
+  "version": "1.0.0",
+  "description": "prueba tecnica nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bryam Abril",
+  "license": "MIT",
+  "dependencies": {
+    "@vendia/serverless-express": "^4.12.6",
+    "express": "^5.2.1",
+    "pg": "^8.18.0"
+  }
+}

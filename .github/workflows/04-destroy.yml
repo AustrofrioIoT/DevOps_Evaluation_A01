@@ -1,0 +1,36 @@
+name: 04 - Terraform Destroy (Production)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    environment: production
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Debugging - List Files
+        run: ls -R
+
+      - name: Package Lambda (Required for Terraform)
+        run: |
+          npm install
+          cd terraform
+          zip -r lambda_payload.zip ../src ../package.json ../node_modules
+          if [ ! -f lambda_payload.zip ]; then echo "ZIP creation failed!"; exit 1; fi
+          ls -lh lambda_payload.zip
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Destroy
+        working-directory: terraform
+        run: |
+          terraform init
+          terraform destroy -var="db_password=${{ secrets.DB_PASSWORD }}" -auto-approve

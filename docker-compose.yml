@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: jelou-db-local
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dbadmin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password123}
+      POSTGRES_DB: ${POSTGRES_DB:-appdb}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: jelou-app-local
+    ports:
+      - "3000:${PORT:-3000}"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DB_HOST: db
+      DB_USER: ${POSTGRES_USER:-dbadmin}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-password123}
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
