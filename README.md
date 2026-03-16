@@ -1,4 +1,4 @@
-# Prueba Técnica Jelou
+# Prueba AWS
 
 Esta solución demuestra la implementación de una arquitectura **Serverless** robusta, segura y escalable utilizando **Terraform** para la infraestructura y **GitHub Actions** para un ciclo de CI/CD profesional basado en etapas (Stages).
 
